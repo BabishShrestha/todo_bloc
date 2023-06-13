@@ -26,7 +26,7 @@ class MainApp extends StatelessWidget {
                 scaffoldBackgroundColor: AppConst.kBkDark,
                 colorScheme: ColorScheme.fromSeed(seedColor: AppConst.kYellow)),
             debugShowCheckedModeBanner: false,
-            home: const OnBoarding(),
+            home: const HomePage(),
           );
         });
   }
