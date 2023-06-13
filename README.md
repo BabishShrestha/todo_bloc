@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # todo_bloc
 
 <h2>Overview</h2>
@@ -54,3 +55,8 @@ Thanks to https://www.youtube.com/@dbestech for in the depth tutorial.
 Feel free to explore the app, and we hope it enhances your task management experience! If you have any questions or issues, please open a GitHub issue.
 
 Happy tasking! 🚀
+=======
+# todo_riverpod
+
+A new Flutter project.
+>>>>>>> d152e1b (Initial Commit)
