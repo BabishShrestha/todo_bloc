@@ -176,21 +176,20 @@ class _HomePageState extends ConsumerState<HomePage>
                           children: const [],
                         ),
                         const CustomExpansionTile(
-                    title: 'Completed Task 2',
-                    subtitle: 'Buy Grocericies this week',
-                    children: []), 
+                            title: 'Completed Task 2',
+                            subtitle: 'Buy Grocericies this week',
+                            children: []),
                         // Expanded(child: const TodoTile()),
                       ]),
                 ),
-                
                 const HeightSpacer(spaceHeight: 20),
                 const CustomExpansionTile(
-                    title: 'Completed Task 2',
+                    title: 'Completed Task 3',
                     subtitle: 'Buy Grocericies this week',
                     children: []),
                 const HeightSpacer(spaceHeight: 20),
-                const CustomExpansionTile(
-                    title: 'Completed Task 2',
+                CustomExpansionTile(
+                    title: DateTime.now().hour.toString(),
                     subtitle: 'Buy Grocericies this week',
                     children: []),
               ],
