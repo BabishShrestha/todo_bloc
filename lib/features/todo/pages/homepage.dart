@@ -1,6 +1,5 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:todo_riverpod/features/todo/controllers/xpansion_provider.dart';
 import '../../../core/widgets/core_widgets.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,6 +24,9 @@ class _HomePageState extends ConsumerState<HomePage>
   late final TabController tabController =
       TabController(length: 2, vsync: this);
 
+  var toggleSwitch = StateProvider.autoDispose<bool>(
+    (ref) => false,
+  );
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -162,34 +164,106 @@ class _HomePageState extends ConsumerState<HomePage>
                 ),
                 const HeightSpacer(spaceHeight: 20),
                 SizedBox(
-                  height: AppConst.kHeight * 0.5,
+                  height: AppConst.kHeight * 0.3,
                   child: TabBarView(
                       physics: const NeverScrollableScrollPhysics(),
                       controller: tabController,
                       children: [
-                        CustomExpansionTile(
-                          title: 'Pending Task 1',
-                          subtitle: 'Buy Grocericies this week',
-                          onTrailingIconPressed: () {
-                            log('Pending Task ');
-                          },
-                          children: const [],
+                        Container(
+                          height: AppConst.kHeight * 0.3,
+                          decoration: BoxDecoration(
+                            color: AppConst.kBkDark,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(AppConst.kRadius),
+                            ),
+                          ),
+                          child: ListView(
+                            children: [
+                              TodoTile(
+                                start: '9:00',
+                                end: '11:00',
+                                switcher: Switch(
+                                  activeColor: AppConst.kLight,
+                                  activeTrackColor: AppConst.kGreen,
+                                  onChanged: (bool value) {
+                                    ref.read(toggleSwitch.notifier).state =
+                                        value;
+                                  },
+                                  value: ref.watch(toggleSwitch),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        const CustomExpansionTile(
+                        CustomExpansionTile(
                             title: 'Completed Task 2',
                             subtitle: 'Buy Grocericies this week',
-                            children: []),
-                        // Expanded(child: const TodoTile()),
+                            onExpansionChanged: (toggle) {
+                              ref
+                                  .read(xpansionStateProvider.notifier)
+                                  .setState(!toggle);
+                            },
+                            trailing: ref.watch(xpansionStateProvider)
+                                ? const Icon(
+                                    AntDesign.circledown,
+                                    color: AppConst.kLight,
+                                  )
+                                : const Icon(
+                                    AntDesign.closecircleo,
+                                    color: AppConst.kBlueLight,
+                                  ),
+                            children: [
+                              TodoTile(
+                                start: '9:00',
+                                end: '11:00',
+                                switcher: Switch(
+                                  activeColor: AppConst.kLight,
+                                  activeTrackColor: AppConst.kGreen,
+                                  onChanged: (bool value) {
+                                    ref.read(toggleSwitch.notifier).state =
+                                        value;
+                                  },
+                                  value: ref.watch(toggleSwitch),
+                                ),
+                              ),
+                            ]),
                       ]),
                 ),
                 const HeightSpacer(spaceHeight: 20),
-                const CustomExpansionTile(
-                    title: 'Completed Task 3',
-                    subtitle: 'Buy Grocericies this week',
-                    children: []),
-                const HeightSpacer(spaceHeight: 20),
                 CustomExpansionTile(
-                    title: DateTime.now().hour.toString(),
+                    title: 'Todo Task 2',
+                    subtitle: 'Buy Grocericies this week',
+                    onExpansionChanged: (toggle) {
+                      ref
+                          .read(xpansionStateProvider.notifier)
+                          .setState(!toggle);
+                    },
+                    trailing: ref.watch(xpansionStateProvider)
+                        ? const Icon(
+                            AntDesign.circledown,
+                            color: AppConst.kLight,
+                          )
+                        : const Icon(
+                            AntDesign.closecircleo,
+                            color: AppConst.kBlueLight,
+                          ),
+                    children: [
+                      TodoTile(
+                        start: '9:00',
+                        end: '11:00',
+                        switcher: Switch(
+                          activeColor: AppConst.kLight,
+                          activeTrackColor: AppConst.kGreen,
+                          onChanged: (bool value) {
+                            ref.read(toggleSwitch.notifier).state = value;
+                          },
+                          value: ref.watch(toggleSwitch),
+                        ),
+                      ),
+                    ]),
+                const HeightSpacer(spaceHeight: 20),
+                const CustomExpansionTile(
+                    title: "Todo Task 3",
                     subtitle: 'Buy Grocericies this week',
                     children: []),
               ],
