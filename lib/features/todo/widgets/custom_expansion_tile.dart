@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_riverpod/features/todo/widgets/button_title.dart';
 
 import '../../../core/utils/constants.dart';
@@ -38,13 +39,14 @@ class CustomExpansionTile extends StatelessWidget {
         ),
         child: ExpansionTile(
           // title: Text('sada'),
+
           title: ButtonTitle(
             title: title,
             subtitle: subtitle,
             leadingColor: AppConst.kBlueLight,
           ),
           childrenPadding: EdgeInsets.zero,
-          tilePadding: EdgeInsets.zero,
+          tilePadding: EdgeInsets.only(right: 12.w),
           onExpansionChanged: onExpansionChanged,
           controlAffinity: ListTileControlAffinity.trailing,
           trailing: trailing,
