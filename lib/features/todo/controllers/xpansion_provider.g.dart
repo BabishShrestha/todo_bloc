@@ -22,12 +22,12 @@ final xpansionStateProvider =
 );
 
 typedef _$XpansionState = AutoDisposeNotifier<bool>;
-String _$xpansionState0Hash() => r'05c43f4f3f068854b44d44fa99ae7fe74e4bcf9f';
+String _$xpansionState0Hash() => r'2e84e9f4eae1ffa00a98c0399428a13b8c4b5c9b';
 
 /// See also [XpansionState0].
 @ProviderFor(XpansionState0)
 final xpansionState0Provider =
-    AutoDisposeNotifierProvider<XpansionState0, dynamic>.internal(
+    AutoDisposeNotifierProvider<XpansionState0, bool>.internal(
   XpansionState0.new,
   name: r'xpansionState0Provider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -37,5 +37,5 @@ final xpansionState0Provider =
   allTransitiveDependencies: null,
 );
 
-typedef _$XpansionState0 = AutoDisposeNotifier<dynamic>;
+typedef _$XpansionState0 = AutoDisposeNotifier<bool>;
 // ignore_for_file: unnecessary_raw_strings, subtype_of_sealed_class, invalid_use_of_internal_member, do_not_use_environment, prefer_const_constructors, public_member_api_docs, avoid_private_typedef_functions

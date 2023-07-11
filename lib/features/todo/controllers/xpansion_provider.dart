@@ -17,7 +17,7 @@ class XpansionState extends _$XpansionState {
 @riverpod
 class XpansionState0 extends _$XpansionState0 {
   @override
-  build() {
+  bool build() {
     return false;
   }
 
