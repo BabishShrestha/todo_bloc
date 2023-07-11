@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:todo_riverpod/core/widgets/app_style.dart';
 import 'package:todo_riverpod/core/widgets/reusable_text.dart';
 
@@ -30,7 +29,10 @@ class CustomOutlineButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return OutlinedButton(
       style: OutlinedButton.styleFrom(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 10.h),
+        padding: EdgeInsets.zero,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
       onPressed: onPressed,
       child: Container(
@@ -39,7 +41,7 @@ class CustomOutlineButton extends StatelessWidget {
         // padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           color: bgColor,
-          borderRadius: const BorderRadius.all(Radius.circular(15)),
+          borderRadius: const BorderRadius.all(Radius.circular(10)),
           border: Border.all(color: borderColor, width: 1),
         ),
         child: Center(
