@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:todo_riverpod/features/todo/controllers/xpansion_provider.dart';
-import '../../../core/widgets/core_widgets.dart';
-
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../../../core/utils/constants.dart';
-
-import '../widgets/custom_expansion_tile.dart';
-import '../widgets/todo_tile.dart';
+import '../../../core/widgets/core_widgets.dart';
+import '../controllers/todo/todo_provider.dart';
+import '../widgets/completed_task.dart';
+import '../widgets/day_after_tomrrow_list.dart';
+import '../widgets/todaytask.dart';
+import '../widgets/tomorrow_list.dart';
+import 'add_page.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
@@ -18,15 +19,42 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
+final checkTaskEntryProvider = StateProvider.autoDispose<bool>((ref) => false);
+
 class _HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
   final TextEditingController searchController = TextEditingController();
   late final TabController tabController =
       TabController(length: 2, vsync: this);
 
-  var toggleSwitch = StateProvider.autoDispose<bool>(
-    (ref) => false,
-  );
+  @override
+  void initState() {
+    super.initState();
+    ref.read(todoStateProvider.notifier).refresh();
+
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+
+    // });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ref.read(checkTaskEntryProvider)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          duration: const Duration(seconds: 1),
+          content: Text(
+            'Your task has been added successfully',
+            style: appStyle(12, AppConst.kLight, FontWeight.bold),
+          ),
+          backgroundColor: AppConst.kBkLight,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,29 +68,9 @@ class _HomePageState extends ConsumerState<HomePage>
               children: [
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      ReusableText(
-                        text: 'Dashboard',
-                        style: appStyle(18, AppConst.kLight, FontWeight.bold),
-                      ),
-                      Container(
-                          width: 25.w,
-                          height: 25.h,
-                          decoration: BoxDecoration(
-                            color: AppConst.kLight,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(AppConst.kRadius - 3),
-                            ),
-                          ),
-                          child: GestureDetector(
-                            onTap: () {},
-                            child: const Icon(Ionicons.add,
-                                color: AppConst.kBkDark),
-                          ))
-                    ],
+                  child: ReusableText(
+                    text: 'Dashboard',
+                    style: appStyle(18, AppConst.kLight, FontWeight.bold),
                   ),
                 ),
                 const HeightSpacer(spaceHeight: 20),
@@ -112,6 +120,25 @@ class _HomePageState extends ConsumerState<HomePage>
                       text: "Today's Task",
                       style: appStyle(14, AppConst.kLight, FontWeight.bold),
                     ),
+                    Container(
+                        width: 25.w,
+                        height: 25.h,
+                        decoration: BoxDecoration(
+                          color: AppConst.kLight,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(AppConst.kRadius - 3),
+                          ),
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => const AddPage()));
+                          },
+                          child:
+                              const Icon(Ionicons.add, color: AppConst.kBkDark),
+                        ))
                   ],
                 ),
                 Container(
@@ -165,107 +192,21 @@ class _HomePageState extends ConsumerState<HomePage>
                 const HeightSpacer(spaceHeight: 20),
                 SizedBox(
                   height: AppConst.kHeight * 0.3,
+                  width: AppConst.kWidth,
                   child: TabBarView(
                       physics: const NeverScrollableScrollPhysics(),
                       controller: tabController,
-                      children: [
-                        Container(
-                          height: AppConst.kHeight * 0.3,
-                          decoration: BoxDecoration(
-                            color: AppConst.kBkDark,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(AppConst.kRadius),
-                            ),
-                          ),
-                          child: ListView(
-                            children: [
-                              TodoTile(
-                                start: '9:00',
-                                end: '11:00',
-                                switcher: Switch(
-                                  activeColor: AppConst.kLight,
-                                  activeTrackColor: AppConst.kGreen,
-                                  onChanged: (bool value) {
-                                    ref.read(toggleSwitch.notifier).state =
-                                        value;
-                                  },
-                                  value: ref.watch(toggleSwitch),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        CustomExpansionTile(
-                            title: 'Completed Task 2',
-                            subtitle: 'Buy Grocericies this week',
-                            onExpansionChanged: (toggle) {
-                              ref
-                                  .read(xpansionStateProvider.notifier)
-                                  .setState(!toggle);
-                            },
-                            trailing: ref.watch(xpansionStateProvider)
-                                ? const Icon(
-                                    AntDesign.circledown,
-                                    color: AppConst.kLight,
-                                  )
-                                : const Icon(
-                                    AntDesign.closecircleo,
-                                    color: AppConst.kBlueLight,
-                                  ),
-                            children: [
-                              TodoTile(
-                                start: '9:00',
-                                end: '11:00',
-                                switcher: Switch(
-                                  activeColor: AppConst.kLight,
-                                  activeTrackColor: AppConst.kGreen,
-                                  onChanged: (bool value) {
-                                    ref.read(toggleSwitch.notifier).state =
-                                        value;
-                                  },
-                                  value: ref.watch(toggleSwitch),
-                                ),
-                              ),
-                            ]),
+                      children: const [
+                        TodayTask(),
+                        CompletedTaskList(),
+                        
                       ]),
                 ),
                 const HeightSpacer(spaceHeight: 20),
-                CustomExpansionTile(
-                    title: 'Todo Task 2',
-                    subtitle: 'Buy Grocericies this week',
-                    onExpansionChanged: (toggle) {
-                      ref
-                          .read(xpansionStateProvider.notifier)
-                          .setState(!toggle);
-                    },
-                    trailing: ref.watch(xpansionStateProvider)
-                        ? const Icon(
-                            AntDesign.circledown,
-                            color: AppConst.kLight,
-                          )
-                        : const Icon(
-                            AntDesign.closecircleo,
-                            color: AppConst.kBlueLight,
-                          ),
-                    children: [
-                      TodoTile(
-                        start: '9:00',
-                        end: '11:00',
-                        switcher: Switch(
-                          activeColor: AppConst.kLight,
-                          activeTrackColor: AppConst.kGreen,
-                          onChanged: (bool value) {
-                            ref.read(toggleSwitch.notifier).state = value;
-                          },
-                          value: ref.watch(toggleSwitch),
-                        ),
-                      ),
-                    ]),
+                const TomorrowList(),
                 const HeightSpacer(spaceHeight: 20),
-                const CustomExpansionTile(
-                    title: "Todo Task 3",
-                    subtitle: 'Buy Grocericies this week',
-                    children: []),
+                const DayAfterTomorrowList(),
+                
               ],
             ),
           ),

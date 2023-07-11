@@ -48,7 +48,7 @@ class TodoTile extends StatelessWidget {
               borderRadius: BorderRadius.circular(AppConst.kRadius),
             ),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                   height: 80.h,

@@ -5,6 +5,7 @@ import 'package:todo_riverpod/core/widgets/spacer.dart';
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/app_style.dart';
 import '../../../core/widgets/reusable_text.dart';
+import '../controllers/todo/todo_provider.dart';
 
 class ButtonTitle extends StatelessWidget {
   const ButtonTitle({
@@ -32,11 +33,13 @@ class ButtonTitle extends StatelessWidget {
         children: [
           Consumer(
             builder: (context, ref, child) {
+              var color =
+                  ref.watch(todoStateProvider.notifier).getRandomColor();
               return Container(
                 height: 80,
                 width: 5,
                 decoration: BoxDecoration(
-                  color: AppConst.kBlueLight,
+                  color: color,
                   borderRadius: BorderRadius.all(
                     Radius.circular(AppConst.kRadius),
                   ),
@@ -47,19 +50,23 @@ class ButtonTitle extends StatelessWidget {
           const WidthSpacer(spaceWidth: 10),
 
           //Title and subtitle
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              ReusableText(
-                text: title,
-                style: appStyle(20, AppConst.kLight, FontWeight.bold),
-              ),
-              const HeightSpacer(spaceHeight: 4),
-              ReusableText(
-                text: subtitle,
-                style: appStyle(12, AppConst.kLight, FontWeight.bold),
-              ),
-            ],
+          Expanded(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ReusableText(
+                  text: title,
+                  style: appStyle(14, AppConst.kLight, FontWeight.bold),
+                ),
+                const HeightSpacer(spaceHeight: 4),
+                ReusableText(
+                  text:
+                      subtitle, // 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'
+                  style: appStyle(10, AppConst.kLight, FontWeight.bold),
+                ),
+              ],
+            ),
           ),
         ],
       ),
