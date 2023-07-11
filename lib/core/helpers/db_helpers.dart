@@ -1,12 +1,14 @@
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart' as sql;
-import 'package:todo_riverpod/core/models/user_model.dart';
 
 import '../models/task_model.dart';
 
 class DBHelper {
+  // static void initDB() async {
+  //   await DBHelper.openDB();
+  // }
+
   static Future<void> createTables(sql.Database database) async {
     await database.execute('''CREATE TABLE IF NOT EXISTS todos(
         id INTEGER PRIMARY KEY AUTOINCREMENT,

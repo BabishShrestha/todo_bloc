@@ -27,6 +27,29 @@ class Task {
 
   String toJson() => json.encode(toMap());
 
+    Task copyWith({
+    int? id,
+    String? title,
+    String? desc,
+    int? isCompleted,
+    String? date,
+    String? startTime,
+    String? endTime,
+    int? remind,
+    String? repeat,
+  }) {
+    return Task(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      desc: desc ?? this.desc,
+      isCompleted: isCompleted ?? this.isCompleted,
+      date: date ?? this.date,
+      startTime: startTime ?? this.startTime,
+      endTime: endTime ?? this.endTime,
+      remind: remind ?? this.remind,
+      repeat: repeat ?? this.repeat,
+    );
+  }
   factory Task.fromMap(Map<String, dynamic> json) => Task(
         id: json["id"],
         title: json["title"],

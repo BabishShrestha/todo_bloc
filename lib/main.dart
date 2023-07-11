@@ -6,6 +6,7 @@ import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/features/todo/pages/homepage.dart';
 
 void main() {
+  // DBHelper.initDB();
   runApp(const ProviderScope(child: MainApp()));
 }
 
