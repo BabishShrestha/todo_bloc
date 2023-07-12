@@ -22,7 +22,7 @@ class CompletedTaskList extends ConsumerWidget {
             todo.isCompleted == 1 ||
             getLast30DaysDate.contains(todo.date!.substring(0, 10)))
         .toList();
-    completedTodos.sort((a, b) => b.startTime!.compareTo(a.startTime!));
+    completedTodos.sort((a, b) => b.date!.compareTo(a.date!));
 
     return Container(
       height: AppConst.kHeight * 0.3,

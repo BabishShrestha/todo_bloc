@@ -1,16 +1,23 @@
 import 'package:dynamic_color/dynamic_color.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/features/todo/pages/homepage.dart';
+import 'core/routes/routes.dart';
+import 'firebase_options.dart';
 
-void main() {
+void main() async {
   // DBHelper.initDB();
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const ProviderScope(child: MainApp()));
 }
 
-class MainApp extends StatelessWidget {
+class MainApp extends ConsumerWidget {
   const MainApp({super.key});
 
   static final defaultLightColorScheme = ColorScheme.fromSwatch(
@@ -22,7 +29,7 @@ class MainApp extends StatelessWidget {
     brightness: Brightness.dark,
   );
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return ScreenUtilInit(
         designSize: const Size(375, 812),
         // designSize: const Size(375, 825),
@@ -48,6 +55,7 @@ class MainApp extends StatelessWidget {
               ),
               debugShowCheckedModeBanner: false,
               home: const HomePage(),
+              onGenerateRoute: Routes.onGenerateRoute,
             );
           });
         });

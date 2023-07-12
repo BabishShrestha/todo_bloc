@@ -20,7 +20,7 @@ class TodoState extends _$TodoState {
   void refresh() async {
     final data = await DBHelper.getItemList();
     state = data.map((e) {
-      return Task.fromMap(e);
+      return  Task.fromMap(e);
     }).toList();
   }
 

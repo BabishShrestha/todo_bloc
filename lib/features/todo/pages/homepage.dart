@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
@@ -30,34 +32,57 @@ class _HomePageState extends ConsumerState<HomePage>
   @override
   void initState() {
     super.initState();
-    ref.read(todoStateProvider.notifier).refresh();
 
     // WidgetsBinding.instance.addPostFrameCallback((_) {
 
     // });
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (ref.read(checkTaskEntryProvider)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          duration: const Duration(seconds: 1),
-          content: Text(
-            'Your task has been added successfully',
-            style: appStyle(12, AppConst.kLight, FontWeight.bold),
-          ),
-          backgroundColor: AppConst.kBkLight,
-          behavior: SnackBarBehavior.floating,
-        ),
-      );
-    }
-  }
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   if (ref.read(checkTaskEntryProvider)) {
+  //     ScaffoldMessenger.of(context).showSnackBar(
+  //       SnackBar(
+  //         duration: const Duration(seconds: 1),
+  //         content: Text(
+  //           'Your task has been added successfully',
+  //           style: appStyle(12, AppConst.kLight, FontWeight.bold),
+  //         ),
+  //         backgroundColor: AppConst.kBkLight,
+  //         behavior: SnackBarBehavior.floating,
+  //       ),
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
+    ref.watch(todoStateProvider.notifier).refresh();
+
     return Scaffold(
+        floatingActionButton: Container(
+            width: 50.w,
+            height: 50.h,
+            decoration: BoxDecoration(
+              boxShadow: const [
+                BoxShadow(
+                  color: AppConst.kBkLight,
+                  spreadRadius: 4,
+                  blurRadius: 5,
+                  offset: Offset(0, 3), // changes position of shadow
+                ),
+              ],
+              color: AppConst.kLight,
+              borderRadius: BorderRadius.circular(25.r),
+            ),
+            child: GestureDetector(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const AddPage()));
+              },
+              child: const Icon(Ionicons.add, color: AppConst.kBkDark),
+            )),
         backgroundColor: AppConst.kGreyDk,
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -120,6 +145,7 @@ class _HomePageState extends ConsumerState<HomePage>
                       text: "Today's Task",
                       style: appStyle(14, AppConst.kLight, FontWeight.bold),
                     ),
+                    const Spacer(),
                     Container(
                         width: 25.w,
                         height: 25.h,
@@ -141,6 +167,7 @@ class _HomePageState extends ConsumerState<HomePage>
                         ))
                   ],
                 ),
+                const HeightSpacer(spaceHeight: 20),
                 Container(
                   decoration: BoxDecoration(
                     color: AppConst.kGreyLight,
@@ -199,14 +226,12 @@ class _HomePageState extends ConsumerState<HomePage>
                       children: const [
                         TodayTask(),
                         CompletedTaskList(),
-                        
                       ]),
                 ),
                 const HeightSpacer(spaceHeight: 20),
                 const TomorrowList(),
                 const HeightSpacer(spaceHeight: 20),
                 const DayAfterTomorrowList(),
-                
               ],
             ),
           ),
