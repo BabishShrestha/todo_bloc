@@ -75,8 +75,6 @@ class _AddPageState extends ConsumerState<UpdateTask> {
               CustomTextFormField(
                 hintText: 'Enter your Description',
                 controller: descriptionController,
-
-                // hintStyle: appStyle(16, AppConst.kGreyLight, FontWeight.normal),
               ),
               HeightSpacer(
                 spaceHeight: 20.h,
@@ -125,7 +123,7 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                     text: startTime.isEmpty ? 'Start Time' : startTime,
                     width: AppConst.kWidth * 0.4,
                     onPressed: () {
-                      picker.DatePicker.showDateTimePicker(context,
+                      picker.DatePicker.showTimePicker(context,
                           onChanged: (date) {
                             ref
                                 .read(startTimeStateProvider.notifier)
@@ -147,7 +145,7 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                     text: endTime.isEmpty ? 'End Time' : endTime,
                     width: AppConst.kWidth * 0.4,
                     onPressed: () {
-                      picker.DatePicker.showDateTimePicker(context,
+                      picker.DatePicker.showTimePicker(context,
                           showTitleActions: true, onChanged: (date) {
                         ref
                             .read(finishTimeStateProvider.notifier)

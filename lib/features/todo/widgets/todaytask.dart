@@ -38,15 +38,7 @@ class TodayTask extends ConsumerWidget {
         itemCount: todayTaskList.length,
         itemBuilder: (context, index) {
           final Task task =
-              // Task(
-              //         date: '1222',
-              //         desc: 'adasd',
-              //         startTime: '9',
-              //         endTime: '11',
-              //         isCompleted: 0,
-              //         remind: 0,
-              //         repeat: "yes",
-              //         title: 'a') ??
+              
               todayTaskList[index];
           bool isCompleted =
               ref.read(todoStateProvider.notifier).getStatus(task);

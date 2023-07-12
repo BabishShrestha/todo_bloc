@@ -8,7 +8,9 @@ import '../../../core/utils/constants.dart';
 import '../../../core/widgets/spacer.dart';
 
 class OTPPage extends StatelessWidget {
-  const OTPPage({super.key});
+  final String phone;
+  final String smsCodeId;
+  const OTPPage({super.key, required this.phone, required this.smsCodeId});
 
   @override
   Widget build(BuildContext context) {
