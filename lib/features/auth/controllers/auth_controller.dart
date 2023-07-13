@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../repository/auth_repository.dart';
+
+final authControllerProvider = Provider<AuthController>((ref) {
+  return AuthController(authRepository: ref.read(authRepositoryProvider));
+});
 
 class AuthController {
   final AuthRepository _authRepository;
@@ -9,12 +14,12 @@ class AuthController {
       : _authRepository = authRepository;
   void verifyOTP(
       {required BuildContext context,
-      required String verificationId,
+      required String smsCodeId,
       required String smsCode,
       required bool mounted}) {
     _authRepository.verifyOTP(
         context: context,
-        verificationId: verificationId,
+        smsCodeId: smsCodeId,
         smsCode: smsCode,
         mounted: mounted);
   }
