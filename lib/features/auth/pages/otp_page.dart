@@ -1,19 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pinput/pinput.dart';
 import 'package:todo_riverpod/core/widgets/app_style.dart';
 import 'package:todo_riverpod/core/widgets/reusable_text.dart';
+import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
 
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/spacer.dart';
 
-class OTPPage extends StatelessWidget {
+class OTPPage extends ConsumerWidget {
   final String phone;
   final String smsCodeId;
   const OTPPage({super.key, required this.phone, required this.smsCodeId});
 
+  void verifyOTPCode(BuildContext context, WidgetRef ref, String smsCode) {
+    ref.read(authControllerProvider).verifyOTP(
+        context: context,
+        smsCode: smsCode,
+        mounted: true,
+        smsCodeId: smsCodeId);
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -43,10 +53,14 @@ class OTPPage extends StatelessWidget {
                 Pinput(
                   length: 6,
                   onCompleted: (String pin) {
-                    if (pin.length == 6) {}
+                    if (pin.length == 6) {
+                      return verifyOTPCode(context, ref, pin);
+                    }
                   },
                   onSubmitted: (String pin) {
-                    if (pin.length == 6) {}
+                    if (pin.length == 6) {
+                      return verifyOTPCode(context, ref, pin);
+                    }
                   },
                 ),
               ],

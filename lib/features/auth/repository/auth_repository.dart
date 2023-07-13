@@ -16,12 +16,12 @@ class AuthRepository {
   const AuthRepository({required this.auth});
   void verifyOTP(
       {required BuildContext context,
-      required String verificationId,
+      required String smsCodeId,
       required String smsCode,
       required bool mounted}) async {
     try {
       final credential = PhoneAuthProvider.credential(
-          verificationId: verificationId, smsCode: smsCode);
+          verificationId: smsCodeId, smsCode: smsCode);
       await auth.signInWithCredential(credential);
       if (!mounted) {
         return;
@@ -41,6 +41,7 @@ class AuthRepository {
   }) async {
     try {
       await auth.verifyPhoneNumber(
+
         phoneNumber: phoneNumber ?? '+11234567890',
         verificationCompleted: (PhoneAuthCredential credential) async {
           await auth.signInWithCredential(credential);
