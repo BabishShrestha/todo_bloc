@@ -7,9 +7,12 @@ import 'package:todo_riverpod/core/widgets/app_style.dart';
 import 'package:todo_riverpod/core/widgets/custom_otn_btn.dart';
 import 'package:todo_riverpod/core/widgets/custom_textfield.dart';
 import 'package:todo_riverpod/core/widgets/reusable_text.dart';
+import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
 import 'package:todo_riverpod/features/auth/pages/otp_page.dart';
+import 'package:todo_riverpod/features/auth/widgets/alert_dialog_box.dart';
 
 import '../../../core/widgets/spacer.dart';
+import '../controllers/code_provider.dart';
 
 class LoginPage extends ConsumerStatefulWidget {
   const LoginPage({super.key});
@@ -21,7 +24,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
   final TextEditingController phoneController = TextEditingController();
   Country country = Country(
       countryCode: "NP",
-      phoneCode: "+977",
+      phoneCode: "977",
       name: "Nepal",
       displayName: "Nepal",
       displayNameNoCountryCode: "NP",
@@ -30,6 +33,29 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       e164Key: "",
       e164Sc: 0,
       level: 1);
+
+  sendCodeToUser() {
+    if (phoneController.text.isEmpty) {
+      showAlertDialog(message: "Please enter your number", context: context);
+    } else if (phoneController.text.length < 10) {
+      showAlertDialog(message: "Your number is too short", context: context);
+    } else {
+      ref.read(authControllerProvider).sendOTP(
+          context: context,
+          phoneNumber:
+              "+${ref.read(codeStateProvider)}${phoneController.text}");
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const OTPPage(
+            phone: '',
+            smsCodeId: '',
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -77,11 +103,16 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                                 ),
                               ),
                               onSelect: (country) {
-                                setState(() {});
+                                setState(() {
+                                  this.country = country;
+                                  ref
+                                      .read(codeStateProvider.notifier)
+                                      .setCode(country.phoneCode);
+                                });
                               });
                         },
                         child: ReusableText(
-                            text: "${country.flagEmoji} ${country.phoneCode}",
+                            text: "${country.flagEmoji} +${country.phoneCode}",
                             style: appStyle(
                                 14, AppConst.kBkDark, FontWeight.w600)),
                       ),
@@ -90,21 +121,19 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                     hintText: "Enter Phone Number",
                     hintStyle: appStyle(14, AppConst.kBkDark, FontWeight.w600)),
               ),
-              const HeightSpacer(spaceHeight: 10),
-              CustomOutlineButton(
-                borderColor: AppConst.kBkDark,
-                height: AppConst.kHeight * 0.06,
-                bgColor: AppConst.kLight,
-                text: 'Enter Code',
-                width: AppConst.kWidth,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>  const OTPPage(phone: '', smsCodeId: '',),
-                    ),
-                  );
-                },
+              const HeightSpacer(spaceHeight: 30),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 10.h),
+                child: CustomOutlineButton(
+                  borderColor: AppConst.kBkDark,
+                  height: AppConst.kHeight * 0.06,
+                  bgColor: AppConst.kLight,
+                  text: 'Enter Code',
+                  width: AppConst.kWidth,
+                  onPressed: () {
+                    sendCodeToUser();
+                  },
+                ),
               ),
             ],
           ),
