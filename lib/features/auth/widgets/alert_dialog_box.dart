@@ -14,7 +14,7 @@ showAlertDialog({
       builder: (context) => AlertDialog(
             content: ReusableText(
               text: message,
-              style: appStyle(16, AppConst.kLight, FontWeight.w600),
+              style: appStyle(12, AppConst.kLight, FontWeight.w600),
             ),
             contentPadding: EdgeInsets.fromLTRB(20.w, 20.h, 20.w, 0.h),
             actions: [
