@@ -2,7 +2,7 @@ import 'dart:convert';
 
 class User {
     final int id;
-    final String isVerified;
+    final int isVerified;
 
     User({
         required this.id,
