@@ -3,9 +3,12 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_riverpod/core/models/user_model.dart';
 import 'package:todo_riverpod/core/utils/constants.dart';
+import 'package:todo_riverpod/features/onboarding/pages/onboarding.dart';
 import 'package:todo_riverpod/features/todo/pages/homepage.dart';
 import 'core/routes/routes.dart';
+import 'features/auth/controllers/user_controller.dart';
 import 'firebase_options.dart';
 
 void main() async {
@@ -30,6 +33,9 @@ class MainApp extends ConsumerWidget {
   );
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    ref.read(userProvider.notifier).refresh();
+    List<User> users = ref.watch(userProvider);
+
     return ScreenUtilInit(
         designSize: const Size(375, 812),
         // designSize: const Size(375, 825),
@@ -54,7 +60,7 @@ class MainApp extends ConsumerWidget {
                 useMaterial3: true,
               ),
               debugShowCheckedModeBanner: false,
-              home: const HomePage(),
+              home: users.isEmpty ? const OnBoarding() : const HomePage(),
               onGenerateRoute: Routes.onGenerateRoute,
             );
           });
