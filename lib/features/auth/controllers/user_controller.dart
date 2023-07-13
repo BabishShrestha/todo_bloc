@@ -3,7 +3,7 @@ import 'package:todo_riverpod/core/helpers/db_helpers.dart';
 
 import '../../../core/models/user_model.dart';
 
-final userProvider = Provider(
+final userProvider = StateNotifierProvider<UserState,List<User>>(
   (ref) => UserState(),
 );
 
