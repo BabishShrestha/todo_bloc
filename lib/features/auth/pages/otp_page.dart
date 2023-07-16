@@ -9,7 +9,7 @@ import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/spacer.dart';
 
-class OTPPage extends ConsumerWidget {
+class OTPPage extends ConsumerWidget  {
   final String phone;
   final String smsCodeId;
   const OTPPage({super.key, required this.phone, required this.smsCodeId});

@@ -35,13 +35,16 @@ class AuthRepository {
     }
   }
 
+  Future<void> signOut() async {
+    await auth.signOut();
+  }
+
   void sendOTP({
     required BuildContext context,
     required String phoneNumber,
   }) async {
     try {
       await auth.verifyPhoneNumber(
-
         phoneNumber: phoneNumber ?? '+11234567890',
         verificationCompleted: (PhoneAuthCredential credential) async {
           await auth.signInWithCredential(credential);
