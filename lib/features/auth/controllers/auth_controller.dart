@@ -30,4 +30,8 @@ class AuthController {
   }) {
     _authRepository.sendOTP(context: context, phoneNumber: phoneNumber);
   }
+
+  void signOut() {
+    _authRepository.signOut();
+  }
 }
