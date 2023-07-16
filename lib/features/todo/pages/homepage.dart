@@ -1,8 +1,8 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
 
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/core_widgets.dart';
@@ -90,12 +90,66 @@ class _HomePageState extends ConsumerState<HomePage>
             preferredSize: Size.fromHeight(85.h),
             child: Column(
               children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.w),
-                  child: ReusableText(
-                    text: 'Dashboard',
-                    style: appStyle(18, AppConst.kLight, FontWeight.bold),
-                  ),
+                Row(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: ReusableText(
+                        text: 'Dashboard',
+                        style: appStyle(18, AppConst.kLight, FontWeight.bold),
+                      ),
+                    ),
+                    const Spacer(),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20.w),
+                      child: GestureDetector(
+                        onTap: () {
+                          //insert alert prompt for log out confirm
+                          showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                    title: const Text('Logout'),
+                                    content: const Text(
+                                        'Are you sure you want to log out?'),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () {
+                                          // Perform logout action here
+                                          ref
+                                              .read(authControllerProvider)
+                                              .signOut();
+
+                                          Navigator.of(context)
+                                              .pop(); // Close the dialog
+                                          Navigator.pushNamedAndRemoveUntil(
+                                              context,
+                                              '/login',
+                                              (route) => false);
+                                        },
+                                        child: const Text('Yes'),
+                                      ),
+                                      TextButton(
+                                        onPressed: () {
+                                          Navigator.of(context)
+                                              .pop(); // Close the dialog
+                                        },
+                                        child: const Text('No'),
+                                      ),
+                                    ]);
+                              });
+                          // ref.read(authControllerProvider).signOut();
+
+                          // Navigator.pushNamedAndRemoveUntil(
+                          //     context, '/login', (route) => false);
+                        },
+                        child: const Icon(
+                          Ionicons.log_out_outline,
+                          color: AppConst.kLight,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const HeightSpacer(spaceHeight: 20),
                 CustomTextFormField(
