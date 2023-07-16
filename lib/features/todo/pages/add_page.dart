@@ -5,7 +5,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/core/widgets/core_widgets.dart';
+import 'package:todo_riverpod/features/auth/widgets/alert_dialog_box.dart';
 
+import '../../../core/helpers/notification_helper.dart';
 import '../../../core/models/task_model.dart';
 import '../controllers/date/date_provider.dart';
 import '../controllers/todo/todo_provider.dart';
@@ -21,16 +23,19 @@ class AddPage extends ConsumerStatefulWidget {
 class _AddPageState extends ConsumerState<AddPage> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  late NotificationHelper notificationHelper;
+  late NotificationHelper notificationController;
+  List<int> notification = [];
 
   // late AnimationController animationController;
-  // @override
-  // void initState() {
-  //   animationController = AnimationController(
-  //     vsync: this,
-  //     duration: const Duration(milliseconds: 500),
-  //   );
-  //   super.initState();
-  // }
+  @override
+  void initState() {
+    notificationHelper = NotificationHelper(ref: ref);
+    notificationController = NotificationHelper(ref: ref);
+    notificationHelper.initializeNotification();
+
+    super.initState();
+  }
 
   // @override
   // void dispose() {
@@ -126,6 +131,9 @@ class _AddPageState extends ConsumerState<AddPage> {
                     onPressed: () {
                       picker.DatePicker.showDateTimePicker(context,
                           showTitleActions: true, onConfirm: (date) {
+                        notification = ref
+                            .read(startTimeStateProvider.notifier)
+                            .dates(date);
                         ref
                             .read(startTimeStateProvider.notifier)
                             .setStart(date.toString().substring(10, 16));
@@ -161,33 +169,16 @@ class _AddPageState extends ConsumerState<AddPage> {
                 onPressed: () {
                   if (isContentNotEmpty(scheduleDate, startTime, endTime)) {
                     addTask(scheduleDate, startTime, endTime);
-                    clearSelectedDateAndTime();
+                    // clearSelectedDateAndTime();
 
-                    Navigator.pop(context);
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => const HomePage()));
                   } else {
                     ref.read(checkTaskEntryProvider.notifier).state = false;
-
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        duration: const Duration(seconds: 1),
-                        // animation: CurvedAnimation(
-                        //   parent: animationController..forward(),
-                        //   curve: Curves.bounceInOut,
-                        // ),
-                        content: Text(
-                          'Please fill all the fields',
-                          style: appStyle(12, AppConst.kLight, FontWeight.bold),
-                        ),
-                        backgroundColor: AppConst.kBkLight,
-                        behavior: SnackBarBehavior.floating,
-                        // action: SnackBarAction(
-                        //   label: 'Dismiss',
-                        //   disabledTextColor: Colors.white,
-                        //   textColor: AppConst.kYellow,
-                        //   onPressed: () {},
-                        // ),
-                      ),
-                    );
+                    showAlertDialog(
+                        context: context, message: "Failed to add task");
                   }
                 },
               ),
@@ -207,6 +198,8 @@ class _AddPageState extends ConsumerState<AddPage> {
       remind: 0,
       repeat: "yes",
     );
+    notificationHelper.scheduleNotification(notification[0], notification[1],
+        notification[2], notification[3], task);
     ref.read(todoStateProvider.notifier).addItem(task);
     ref.read(checkTaskEntryProvider.notifier).state = true;
   }
