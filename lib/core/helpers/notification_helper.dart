@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -44,7 +46,7 @@ class NotificationHelper {
     await flutterLocalNotificationsPlugin.initialize(initializationSettings,
         onDidReceiveNotificationResponse: (data) async {
       if (data != null) {
-        debugPrint('notification payload: ${data.payload}');
+        log('notification payload: ${data.payload}');
       }
       selectNotificationSubject.add(data.payload);
     });
@@ -101,6 +103,7 @@ class NotificationHelper {
 
   scheduleNotification(
       int days, int hours, int minutes, int seconds, Task task) async {
+        
     await flutterLocalNotificationsPlugin.zonedSchedule(
         task.id ?? 0,
         task.title,

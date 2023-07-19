@@ -45,7 +45,7 @@ class AuthRepository {
   }) async {
     try {
       await auth.verifyPhoneNumber(
-        phoneNumber: phoneNumber ?? '+11234567890',
+        phoneNumber: phoneNumber,
         verificationCompleted: (PhoneAuthCredential credential) async {
           await auth.signInWithCredential(credential);
         },
