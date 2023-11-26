@@ -32,8 +32,8 @@ License
 This project is licensed under the MIT License - see the LICENSE file for details.
 <h2>Acknowledgments</h2>
 
-    Special thanks to the Flutter community for their support and inspiration.
-   
+Special thanks to the Flutter community for their support and inspiration.
+Thanks to https://www.youtube.com/@dbestech for in the depth tutorial.
 
 Feel free to explore the app, and we hope it enhances your task management experience! If you have any questions or issues, please open a GitHub issue.
 
