@@ -1,7 +1,10 @@
 # todo_riverpod
+
 <h2>Overview</h2>
 
 Welcome to the Awesome Todo App! This Flutter-based task management application is designed to help you stay organized and on top of your daily activities. Whether you're a busy professional, a student, or just someone who wants to keep track of their tasks, this app has got you covered.
+
+https://github.com/BabishShrestha/todo_riverpod/assets/35884235/e622cb99-6d6a-43fd-a25d-3dd1d3ca61dc
 <h2>Features</h2>
 1. OTP Login
 
