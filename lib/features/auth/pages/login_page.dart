@@ -1,26 +1,27 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+
 import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/core/widgets/app_style.dart';
 import 'package:todo_riverpod/core/widgets/custom_otn_btn.dart';
 import 'package:todo_riverpod/core/widgets/custom_textfield.dart';
 import 'package:todo_riverpod/core/widgets/reusable_text.dart';
 import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
+import 'package:todo_riverpod/features/auth/controllers/code_bloc.dart';
 import 'package:todo_riverpod/features/auth/pages/otp_page.dart';
 import 'package:todo_riverpod/features/auth/widgets/alert_dialog_box.dart';
 
 import '../../../core/widgets/spacer.dart';
-import '../controllers/code_provider.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
   @override
-  ConsumerState<ConsumerStatefulWidget> createState() => _LoginPageState();
+  State<StatefulWidget> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends ConsumerState<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController phoneController = TextEditingController();
   Country country = Country(
       countryCode: "NP",
@@ -34,7 +35,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       e164Sc: 0,
       level: 1);
 
-  sendCodeToUser() {
+  sendCodeToUser(codeCubit) {
     if (phoneController.text.isEmpty) {
       showAlertDialog(message: "Please enter your number", context: context);
     } else if (phoneController.text.length < 10) {
@@ -43,7 +44,8 @@ class _LoginPageState extends ConsumerState<LoginPage> {
       ref.read(authControllerProvider).sendOTP(
           context: context,
           phoneNumber:
-              "+${ref.read(codeStateProvider)}${phoneController.text}");
+              // "+${ref.read(codeStateProvider)}${phoneController.text}");
+              "+${codeCubit.state}${phoneController.text}");
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -58,6 +60,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final codeCubit = BlocProvider.of<CodeCubit>(context);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -105,9 +108,10 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                               onSelect: (country) {
                                 setState(() {
                                   this.country = country;
-                                  ref
-                                      .read(codeStateProvider.notifier)
-                                      .setCode(country.phoneCode);
+                                  codeCubit.setCode(country.phoneCode);
+                                  // ref
+                                  //     .read(codeStateProvider.notifier)
+                                  //     .setCode(country.phoneCode);
                                 });
                               });
                         },
@@ -131,7 +135,7 @@ class _LoginPageState extends ConsumerState<LoginPage> {
                   text: 'Enter Code',
                   width: AppConst.kWidth,
                   onPressed: () {
-                    sendCodeToUser();
+                    sendCodeToUser(codeCubit);
                   },
                 ),
               ),

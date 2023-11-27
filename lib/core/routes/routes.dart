@@ -10,6 +10,7 @@ class Routes {
   static const String otp = '/otp';
 
   static Route<dynamic> onGenerateRoute(RouteSettings settings) {
+
     switch (settings.name) {
       case onboarding:
         return MaterialPageRoute(builder: (context) => const OnBoarding());

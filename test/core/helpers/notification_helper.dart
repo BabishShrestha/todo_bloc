@@ -7,9 +7,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:todo_riverpod/features/todo/pages/todo_notification_page.dart';
 import 'dart:io' show Platform;
 
-import '../../features/todo/pages/todo_notification_page.dart';
 import '../models/task_model.dart';
 
 class NotificationHelper {
@@ -103,7 +103,6 @@ class NotificationHelper {
 
   scheduleNotification(
       int days, int hours, int minutes, int seconds, Task task) async {
-        
     await flutterLocalNotificationsPlugin.zonedSchedule(
         task.id ?? 0,
         task.title,
