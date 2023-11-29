@@ -2,14 +2,13 @@ import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/core/widgets/app_style.dart';
 import 'package:todo_riverpod/core/widgets/custom_otn_btn.dart';
 import 'package:todo_riverpod/core/widgets/custom_textfield.dart';
 import 'package:todo_riverpod/core/widgets/reusable_text.dart';
-import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
-import 'package:todo_riverpod/features/auth/controllers/code_bloc.dart';
+import 'package:todo_riverpod/features/auth/bloc/auth_cubit.dart';
+import 'package:todo_riverpod/features/auth/bloc/country_code_cubit.dart';
 import 'package:todo_riverpod/features/auth/pages/otp_page.dart';
 import 'package:todo_riverpod/features/auth/widgets/alert_dialog_box.dart';
 
@@ -35,13 +34,13 @@ class _LoginPageState extends State<LoginPage> {
       e164Sc: 0,
       level: 1);
 
-  sendCodeToUser(codeCubit) {
+  sendCodeToUser(codeCubit, authCubit) {
     if (phoneController.text.isEmpty) {
       showAlertDialog(message: "Please enter your number", context: context);
     } else if (phoneController.text.length < 10) {
       showAlertDialog(message: "Your number is too short", context: context);
     } else {
-      ref.read(authControllerProvider).sendOTP(
+      authCubit.sendOTP(
           context: context,
           phoneNumber:
               // "+${ref.read(codeStateProvider)}${phoneController.text}");
@@ -61,6 +60,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final codeCubit = BlocProvider.of<CodeCubit>(context);
+    final authCubit = BlocProvider.of<AuthCubit>(context);
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -108,7 +108,7 @@ class _LoginPageState extends State<LoginPage> {
                               onSelect: (country) {
                                 setState(() {
                                   this.country = country;
-                                  codeCubit.setCode(country.phoneCode);
+                                  codeCubit.setCountryCode(country.phoneCode);
                                   // ref
                                   //     .read(codeStateProvider.notifier)
                                   //     .setCode(country.phoneCode);
@@ -135,7 +135,7 @@ class _LoginPageState extends State<LoginPage> {
                   text: 'Enter Code',
                   width: AppConst.kWidth,
                   onPressed: () {
-                    sendCodeToUser(codeCubit);
+                    sendCodeToUser(codeCubit, authCubit);
                   },
                 ),
               ),

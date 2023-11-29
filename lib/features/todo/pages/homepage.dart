@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
+import 'package:todo_riverpod/features/auth/bloc/auth_cubit.dart';
 
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/core_widgets.dart';
@@ -58,6 +59,7 @@ class _HomePageState extends ConsumerState<HomePage>
   @override
   Widget build(BuildContext context) {
     ref.watch(todoStateProvider.notifier).refresh();
+    final authCubit = BlocProvider.of<AuthCubit>(context);
 
     return Scaffold(
         floatingActionButton: Container(
@@ -116,9 +118,7 @@ class _HomePageState extends ConsumerState<HomePage>
                                       TextButton(
                                         onPressed: () {
                                           // Perform logout action here
-                                          ref
-                                              .read(authControllerProvider)
-                                              .signOut();
+                                          authCubit.signOut();
 
                                           Navigator.of(context)
                                               .pop(); // Close the dialog

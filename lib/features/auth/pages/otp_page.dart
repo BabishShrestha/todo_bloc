@@ -1,21 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:pinput/pinput.dart';
 import 'package:todo_riverpod/core/widgets/app_style.dart';
 import 'package:todo_riverpod/core/widgets/reusable_text.dart';
-import 'package:todo_riverpod/features/auth/controllers/auth_controller.dart';
+import 'package:todo_riverpod/features/auth/bloc/auth_cubit.dart';
 
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/spacer.dart';
 
-class OTPPage extends ConsumerWidget {
+class OTPPage extends StatelessWidget {
   final String phone;
   final String smsCodeId;
   const OTPPage({super.key, required this.phone, required this.smsCodeId});
 
-  void verifyOTPCode(BuildContext context, WidgetRef ref, String smsCode) {
-    ref.read(authControllerProvider).verifyOTP(
+  void verifyOTPCode(BuildContext context, String smsCode) {
+    final authCubit = BlocProvider.of<AuthCubit>(context);
+    authCubit.verifyOTP(
         context: context,
         smsCode: smsCode,
         mounted: true,
@@ -23,7 +24,7 @@ class OTPPage extends ConsumerWidget {
   }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent,
@@ -54,12 +55,12 @@ class OTPPage extends ConsumerWidget {
                   length: 6,
                   onCompleted: (String pin) {
                     if (pin.length == 6) {
-                      return verifyOTPCode(context, ref, pin);
+                      return verifyOTPCode(context, pin);
                     }
                   },
                   onSubmitted: (String pin) {
                     if (pin.length == 6) {
-                      return verifyOTPCode(context, ref, pin);
+                      return verifyOTPCode(context, pin);
                     }
                   },
                 ),

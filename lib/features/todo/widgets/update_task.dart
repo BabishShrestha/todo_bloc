@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_datetime_picker_plus/flutter_datetime_picker_plus.dart'
     as picker;
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/core/widgets/core_widgets.dart';
+import 'package:todo_riverpod/features/todo/bloc/date_cubit.dart';
 
 import '../../../core/models/task_model.dart';
-import '../controllers/date/date_provider.dart';
 import '../controllers/todo/todo_provider.dart';
 import '../pages/homepage.dart';
 
@@ -23,27 +24,29 @@ class UpdateTask extends ConsumerStatefulWidget {
 class _AddPageState extends ConsumerState<UpdateTask> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
+  late DateCubit dateCubit;
+  late StartTimeCubit startTimeCubit;
+  late FinishTimeCubit endTimeCubit;
   @override
   void initState() {
     super.initState();
     titleController.text = widget.task.title ?? '';
     descriptionController.text = widget.task.desc ?? '';
     SchedulerBinding.instance.addPostFrameCallback((_) {
-      ref.read(dateStateProvider.notifier).setDate(widget.task.date.toString());
-      ref
-          .read(startTimeStateProvider.notifier)
-          .setStart(widget.task.startTime.toString());
-      ref
-          .read(finishTimeStateProvider.notifier)
-          .setFinish(widget.task.endTime.toString());
+      dateCubit = BlocProvider.of<DateCubit>(context);
+      startTimeCubit = BlocProvider.of<StartTimeCubit>(context);
+      endTimeCubit = BlocProvider.of<FinishTimeCubit>(context);
+      dateCubit.setDate(widget.task.date.toString());
+      startTimeCubit.setStart(widget.task.startTime.toString());
+      endTimeCubit.setFinish(widget.task.endTime.toString());
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    final scheduleDate = ref.watch(dateStateProvider);
-    final startTime = ref.watch(startTimeStateProvider);
-    final endTime = ref.watch(finishTimeStateProvider);
+    // final scheduleDate = ref.watch(dateStateProvider);
+    // final startTime = ref.watch(startTimeStateProvider);
+    // final endTime = ref.watch(finishTimeStateProvider);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -83,7 +86,7 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                 borderColor: AppConst.kLight,
                 height: 52.h,
                 bgColor: AppConst.kBlueLight,
-                text: scheduleDate.isEmpty ? 'Set Date' : scheduleDate,
+                text: dateCubit.state.isEmpty ? 'Set Date' : dateCubit.state,
                 width: AppConst.kWidth,
                 onPressed: () {
                   picker.DatePicker.showDatePicker(context,
@@ -100,13 +103,9 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                           doneStyle:
                               TextStyle(color: AppConst.kGreen, fontSize: 16)),
                       onChanged: (date) {
-                    ref
-                        .read(dateStateProvider.notifier)
-                        .setDate(date.toString().substring(0, 10));
+                    dateCubit.setDate(date.toString().substring(0, 10));
                   }, onConfirm: (date) {
-                    ref
-                        .read(dateStateProvider.notifier)
-                        .setDate(date.toString().substring(0, 10));
+                    dateCubit.setDate(date.toString().substring(0, 10));
                   }, currentTime: DateTime.now(), locale: picker.LocaleType.en);
                 },
               ),
@@ -120,19 +119,19 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                     borderColor: AppConst.kLight,
                     height: 52.h,
                     bgColor: AppConst.kBlueLight,
-                    text: startTime.isEmpty ? 'Start Time' : startTime,
+                    text: startTimeCubit.state.isEmpty
+                        ? 'Start Time'
+                        : startTimeCubit.state,
                     width: AppConst.kWidth * 0.4,
                     onPressed: () {
                       picker.DatePicker.showTimePicker(context,
                           onChanged: (date) {
-                            ref
-                                .read(startTimeStateProvider.notifier)
+                            startTimeCubit
                                 .setStart(date.toString().substring(10, 16));
                           },
                           showTitleActions: true,
                           onConfirm: (date) {
-                            ref
-                                .read(startTimeStateProvider.notifier)
+                            startTimeCubit
                                 .setStart(date.toString().substring(10, 16));
                           },
                           locale: picker.LocaleType.en);
@@ -142,17 +141,16 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                     borderColor: AppConst.kLight,
                     height: 52.h,
                     bgColor: AppConst.kBlueLight,
-                    text: endTime.isEmpty ? 'End Time' : endTime,
+                    text:
+                        endTimeCubit.state.isEmpty ? 'End Time' : endTimeCubit.state,
                     width: AppConst.kWidth * 0.4,
                     onPressed: () {
                       picker.DatePicker.showTimePicker(context,
                           showTitleActions: true, onChanged: (date) {
-                        ref
-                            .read(finishTimeStateProvider.notifier)
+                        endTimeCubit
                             .setFinish(date.toString().substring(10, 16));
                       }, onConfirm: (date) {
-                        ref
-                            .read(finishTimeStateProvider.notifier)
+                        endTimeCubit
                             .setFinish(date.toString().substring(10, 16));
                       }, locale: picker.LocaleType.en);
                     },
@@ -169,8 +167,9 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                 text: 'Submit',
                 width: AppConst.kWidth,
                 onPressed: () {
-                  if (isContentNotEmpty(scheduleDate, startTime, endTime)) {
-                    addTask(scheduleDate, startTime, endTime);
+                  if (isContentNotEmpty(
+                      dateCubit.state, startTimeCubit.state, endTimeCubit.state)) {
+                    addTask(dateCubit.state, startTimeCubit.state, endTimeCubit.state);
                     clearSelectedDateAndTime();
 
                     Navigator.pop(context);
@@ -232,8 +231,8 @@ class _AddPageState extends ConsumerState<UpdateTask> {
   }
 
   void clearSelectedDateAndTime() {
-    ref.read(dateStateProvider.notifier).setDate('');
-    ref.read(startTimeStateProvider.notifier).setStart('');
-    ref.read(finishTimeStateProvider.notifier).setFinish('');
+    dateCubit.setDate('');
+    startTimeCubit.setStart('');
+    endTimeCubit.setFinish('');
   }
 }

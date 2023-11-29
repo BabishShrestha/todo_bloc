@@ -6,9 +6,9 @@ import 'package:todo_riverpod/core/helpers/db_helpers.dart';
 import '../../../core/routes/routes.dart';
 import '../widgets/alert_dialog_box.dart';
 
-final authRepositoryProvider = Provider<AuthRepository>(
-  (ref) => AuthRepository(auth: FirebaseAuth.instance),
-);
+// final authRepositoryProvider = Provider<AuthRepository>(
+//   (ref) => AuthRepository(auth: FirebaseAuth.instance),
+// );
 
 class AuthRepository {
   final FirebaseAuth auth;
