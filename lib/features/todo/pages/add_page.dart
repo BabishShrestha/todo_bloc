@@ -49,7 +49,7 @@ class _AddPageState extends ConsumerState<AddPage> {
     final scheduleDate = BlocProvider.of<DateCubit>(context);
     final startTime = BlocProvider.of<StartTimeCubit>(context);
     final endTime = BlocProvider.of<FinishTimeCubit>(context);
-    final todoCubit= BlocProvider.of<TodoCubit>(context);
+    final todoCubit = BlocProvider.of<TodoCubit>(context);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -173,7 +173,8 @@ class _AddPageState extends ConsumerState<AddPage> {
                 onPressed: () {
                   if (isContentNotEmpty(
                       scheduleDate.state, startTime.state, endTime.state)) {
-                    addTask(scheduleDate.state, startTime.state, endTime.state, todoCubit);
+                    addTask(scheduleDate.state, startTime.state, endTime.state,
+                        todoCubit);
                     // clearSelectedDateAndTime();
 
                     Navigator.push(
@@ -181,7 +182,7 @@ class _AddPageState extends ConsumerState<AddPage> {
                         MaterialPageRoute(
                             builder: (context) => const HomePage()));
                   } else {
-                    ref.read(checkTaskEntryProvider.notifier).state = false;
+                    // ref.read(checkTaskEntryProvider.notifier).state = false;
                     showAlertDialog(
                         context: context, message: "Failed to add task");
                   }
@@ -192,7 +193,8 @@ class _AddPageState extends ConsumerState<AddPage> {
         ));
   }
 
-  addTask(String scheduleDate, String startTime, String endTime,TodoCubit todoCubit) {
+  addTask(String scheduleDate, String startTime, String endTime,
+      TodoCubit todoCubit) {
     Task task = Task(
       title: titleController.text,
       desc: descriptionController.text,
@@ -207,7 +209,7 @@ class _AddPageState extends ConsumerState<AddPage> {
         notification[2], notification[3], task);
     todoCubit.addItem(task);
     // ref.read(todoStateProvider.notifier).addItem(task);
-    ref.read(checkTaskEntryProvider.notifier).state = true;
+    // ref.read(checkTaskEntryProvider.notifier).state = true;
   }
 
   bool isContentNotEmpty(
@@ -223,8 +225,10 @@ class _AddPageState extends ConsumerState<AddPage> {
     // ref.read(dateStateProvider.notifier).setDate('');
     // ref.read(startTimeStateProvider.notifier).setStart('');
     // ref.read(finishTimeStateProvider.notifier).setFinish('');
-    dateCubit.setDate('');
-    startTimeCubit.setStart('');
-    finishTimeCubit.setFinish('');
+    setState(() {
+      dateCubit.setDate('');
+      startTimeCubit.setStart('');
+      finishTimeCubit.setFinish('');
+    });
   }
 }

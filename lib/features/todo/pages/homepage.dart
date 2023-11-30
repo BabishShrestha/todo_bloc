@@ -21,7 +21,7 @@ class HomePage extends ConsumerStatefulWidget {
   ConsumerState<HomePage> createState() => _HomePageState();
 }
 
-final checkTaskEntryProvider = StateProvider.autoDispose<bool>((ref) => false);
+// final checkTaskEntryProvider = StateProvider.autoDispose<bool>((ref) => false);
 
 class _HomePageState extends ConsumerState<HomePage>
     with TickerProviderStateMixin {
