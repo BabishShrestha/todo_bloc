@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_riverpod/core/widgets/spacer.dart';
+import 'package:todo_riverpod/features/todo/bloc/todo_cubit.dart';
 
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/app_style.dart';
@@ -33,8 +35,10 @@ class ButtonTitle extends StatelessWidget {
         children: [
           Consumer(
             builder: (context, ref, child) {
+                  final todoCubit= BlocProvider.of<TodoCubit>(context);
+
               var color =
-                  ref.watch(todoStateProvider.notifier).getRandomColor();
+                  todoCubit.getRandomColor();
               return Container(
                 height: 80,
                 width: 5,
