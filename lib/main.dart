@@ -13,6 +13,8 @@ import 'package:todo_riverpod/features/auth/bloc/user_cubit.dart';
 import 'package:todo_riverpod/features/auth/repository/auth_repository.dart';
 import 'package:todo_riverpod/features/onboarding/pages/onboarding.dart';
 import 'package:todo_riverpod/features/todo/bloc/date_cubit.dart';
+import 'package:todo_riverpod/features/todo/bloc/todo_cubit.dart';
+import 'package:todo_riverpod/features/todo/bloc/xpansion_cubit.dart';
 import 'package:todo_riverpod/features/todo/pages/homepage.dart';
 
 import 'core/routes/routes.dart';
@@ -55,6 +57,9 @@ class MainApp extends StatelessWidget {
         BlocProvider<DateCubit>(create: (context) => DateCubit()),
         BlocProvider<StartTimeCubit>(create: (context) => StartTimeCubit()),
         BlocProvider<FinishTimeCubit>(create: (context) => FinishTimeCubit()),
+        BlocProvider<TodoCubit>(create: (context) => TodoCubit()),
+        BlocProvider<XpansionCubit>(create: (context) => XpansionCubit()),
+        BlocProvider<XpansionCubit0>(create: (context) => XpansionCubit0()),
       ],
       child: ScreenUtilInit(
           designSize: const Size(375, 812),

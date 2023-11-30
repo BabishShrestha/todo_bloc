@@ -8,10 +8,10 @@ import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/core/widgets/core_widgets.dart';
 import 'package:todo_riverpod/features/auth/widgets/alert_dialog_box.dart';
 import 'package:todo_riverpod/features/todo/bloc/date_cubit.dart';
+import 'package:todo_riverpod/features/todo/bloc/todo_cubit.dart';
 
 import '../../../core/helpers/notification_helper.dart';
 import '../../../core/models/task_model.dart';
-import '../controllers/todo/todo_provider.dart';
 import 'homepage.dart';
 
 class AddPage extends ConsumerStatefulWidget {
@@ -49,6 +49,7 @@ class _AddPageState extends ConsumerState<AddPage> {
     final scheduleDate = BlocProvider.of<DateCubit>(context);
     final startTime = BlocProvider.of<StartTimeCubit>(context);
     final endTime = BlocProvider.of<FinishTimeCubit>(context);
+    final todoCubit= BlocProvider.of<TodoCubit>(context);
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.transparent,
@@ -85,73 +86,79 @@ class _AddPageState extends ConsumerState<AddPage> {
               HeightSpacer(
                 spaceHeight: 20.h,
               ),
-              CustomOutlineButton(
-                borderColor: AppConst.kLight,
-                height: 52.h,
-                bgColor: AppConst.kBlueLight,
-                text: scheduleDate.state.isEmpty
-                    ? 'Set Date'
-                    : scheduleDate.state,
-                width: AppConst.kWidth,
-                onPressed: () {
-                  picker.DatePicker.showDatePicker(context,
-                      showTitleActions: true,
-                      minTime: DateTime.now(),
-                      maxTime:
-                          DateTime.now().add(const Duration(days: 365 * 2)),
-                      theme: const picker.DatePickerTheme(
-                          headerColor: Colors.white,
-                          itemStyle: TextStyle(
-                              color: AppConst.kBlueLight,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18),
-                          doneStyle:
-                              TextStyle(color: AppConst.kGreen, fontSize: 16)),
-                      //     onChanged: (date) {
-                      //   if (kDebugMode) {
-                      //     log('change $date in time zone ${date.timeZoneOffset.inHours}');
-                      //   }
-                      // },
-                      onConfirm: (date) {
-                    scheduleDate.setDate(date.toString().substring(0, 10));
-                  }, currentTime: DateTime.now(), locale: picker.LocaleType.en);
-                },
-              ),
+              BlocBuilder<DateCubit, String>(builder: (context, state) {
+                return CustomOutlineButton(
+                  borderColor: AppConst.kLight,
+                  height: 52.h,
+                  bgColor: AppConst.kBlueLight,
+                  text: state.isEmpty ? 'Set Date' : state,
+                  width: AppConst.kWidth,
+                  onPressed: () {
+                    picker.DatePicker.showDatePicker(context,
+                        showTitleActions: true,
+                        minTime: DateTime.now(),
+                        maxTime:
+                            DateTime.now().add(const Duration(days: 365 * 2)),
+                        theme: const picker.DatePickerTheme(
+                            headerColor: Colors.white,
+                            itemStyle: TextStyle(
+                                color: AppConst.kBlueLight,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18),
+                            doneStyle: TextStyle(
+                                color: AppConst.kGreen, fontSize: 16)),
+                        //     onChanged: (date) {
+                        //   if (kDebugMode) {
+                        //     log('change $date in time zone ${date.timeZoneOffset.inHours}');
+                        //   }
+                        // },
+                        onConfirm: (date) {
+                      scheduleDate.setDate(date.toString().substring(0, 10));
+                    },
+                        currentTime: DateTime.now(),
+                        locale: picker.LocaleType.en);
+                  },
+                );
+              }),
               HeightSpacer(
                 spaceHeight: 20.h,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  CustomOutlineButton(
-                    borderColor: AppConst.kLight,
-                    height: 52.h,
-                    bgColor: AppConst.kBlueLight,
-                    text: startTime.state.isEmpty
-                        ? 'Start Time'
-                        : startTime.state,
-                    width: AppConst.kWidth * 0.4,
-                    onPressed: () {
-                      picker.DatePicker.showDateTimePicker(context,
-                          showTitleActions: true, onConfirm: (date) {
-                        notification = startTime.dates(date);
-                        startTime.setStart(date.toString().substring(10, 16));
-                      }, locale: picker.LocaleType.en);
-                    },
-                  ),
-                  CustomOutlineButton(
-                    borderColor: AppConst.kLight,
-                    height: 52.h,
-                    bgColor: AppConst.kBlueLight,
-                    text: endTime.state.isEmpty ? 'End Time' : endTime.state,
-                    width: AppConst.kWidth * 0.4,
-                    onPressed: () {
-                      picker.DatePicker.showDateTimePicker(context,
-                          showTitleActions: true, onConfirm: (date) {
-                        endTime.setFinish(date.toString().substring(10, 16));
-                      }, locale: picker.LocaleType.en);
-                    },
-                  ),
+                  BlocBuilder<StartTimeCubit, String>(
+                      builder: (context, state) {
+                    return CustomOutlineButton(
+                      borderColor: AppConst.kLight,
+                      height: 52.h,
+                      bgColor: AppConst.kBlueLight,
+                      text: state.isEmpty ? 'Start Time' : state,
+                      width: AppConst.kWidth * 0.4,
+                      onPressed: () {
+                        picker.DatePicker.showDateTimePicker(context,
+                            showTitleActions: true, onConfirm: (date) {
+                          notification = startTime.dates(date);
+                          startTime.setStart(date.toString().substring(10, 16));
+                        }, locale: picker.LocaleType.en);
+                      },
+                    );
+                  }),
+                  BlocBuilder<FinishTimeCubit, String>(
+                      builder: (context, state) {
+                    return CustomOutlineButton(
+                      borderColor: AppConst.kLight,
+                      height: 52.h,
+                      bgColor: AppConst.kBlueLight,
+                      text: state.isEmpty ? 'End Time' : state,
+                      width: AppConst.kWidth * 0.4,
+                      onPressed: () {
+                        picker.DatePicker.showDateTimePicker(context,
+                            showTitleActions: true, onConfirm: (date) {
+                          endTime.setFinish(date.toString().substring(10, 16));
+                        }, locale: picker.LocaleType.en);
+                      },
+                    );
+                  }),
                 ],
               ),
               HeightSpacer(
@@ -166,7 +173,7 @@ class _AddPageState extends ConsumerState<AddPage> {
                 onPressed: () {
                   if (isContentNotEmpty(
                       scheduleDate.state, startTime.state, endTime.state)) {
-                    addTask(scheduleDate.state, startTime.state, endTime.state);
+                    addTask(scheduleDate.state, startTime.state, endTime.state, todoCubit);
                     // clearSelectedDateAndTime();
 
                     Navigator.push(
@@ -185,7 +192,7 @@ class _AddPageState extends ConsumerState<AddPage> {
         ));
   }
 
-  addTask(String scheduleDate, String startTime, String endTime) {
+  addTask(String scheduleDate, String startTime, String endTime,TodoCubit todoCubit) {
     Task task = Task(
       title: titleController.text,
       desc: descriptionController.text,
@@ -198,7 +205,8 @@ class _AddPageState extends ConsumerState<AddPage> {
     );
     notificationHelper.scheduleNotification(notification[0], notification[1],
         notification[2], notification[3], task);
-    ref.read(todoStateProvider.notifier).addItem(task);
+    todoCubit.addItem(task);
+    // ref.read(todoStateProvider.notifier).addItem(task);
     ref.read(checkTaskEntryProvider.notifier).state = true;
   }
 

@@ -4,10 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_vector_icons/flutter_vector_icons.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_riverpod/features/auth/bloc/auth_cubit.dart';
+import 'package:todo_riverpod/features/todo/bloc/todo_cubit.dart';
 
 import '../../../core/utils/constants.dart';
 import '../../../core/widgets/core_widgets.dart';
-import '../controllers/todo/todo_provider.dart';
 import '../widgets/completed_task.dart';
 import '../widgets/day_after_tomrrow_list.dart';
 import '../widgets/todaytask.dart';
@@ -58,8 +58,9 @@ class _HomePageState extends ConsumerState<HomePage>
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(todoStateProvider.notifier).refresh();
     final authCubit = BlocProvider.of<AuthCubit>(context);
+    final todoCubit= BlocProvider.of<TodoCubit>(context);
+    todoCubit.refresh();
 
     return Scaffold(
         floatingActionButton: Container(

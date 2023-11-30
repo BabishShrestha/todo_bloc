@@ -8,9 +8,9 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:todo_riverpod/core/utils/constants.dart';
 import 'package:todo_riverpod/core/widgets/core_widgets.dart';
 import 'package:todo_riverpod/features/todo/bloc/date_cubit.dart';
+import 'package:todo_riverpod/features/todo/bloc/todo_cubit.dart';
 
 import '../../../core/models/task_model.dart';
-import '../controllers/todo/todo_provider.dart';
 import '../pages/homepage.dart';
 
 class UpdateTask extends ConsumerStatefulWidget {
@@ -44,6 +44,8 @@ class _AddPageState extends ConsumerState<UpdateTask> {
 
   @override
   Widget build(BuildContext context) {
+    final todoCubit = BlocProvider.of<TodoCubit>(context);
+
     // final scheduleDate = ref.watch(dateStateProvider);
     // final startTime = ref.watch(startTimeStateProvider);
     // final endTime = ref.watch(finishTimeStateProvider);
@@ -141,8 +143,9 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                     borderColor: AppConst.kLight,
                     height: 52.h,
                     bgColor: AppConst.kBlueLight,
-                    text:
-                        endTimeCubit.state.isEmpty ? 'End Time' : endTimeCubit.state,
+                    text: endTimeCubit.state.isEmpty
+                        ? 'End Time'
+                        : endTimeCubit.state,
                     width: AppConst.kWidth * 0.4,
                     onPressed: () {
                       picker.DatePicker.showTimePicker(context,
@@ -167,9 +170,10 @@ class _AddPageState extends ConsumerState<UpdateTask> {
                 text: 'Submit',
                 width: AppConst.kWidth,
                 onPressed: () {
-                  if (isContentNotEmpty(
-                      dateCubit.state, startTimeCubit.state, endTimeCubit.state)) {
-                    addTask(dateCubit.state, startTimeCubit.state, endTimeCubit.state);
+                  if (isContentNotEmpty(dateCubit.state, startTimeCubit.state,
+                      endTimeCubit.state)) {
+                    addTask(dateCubit.state, startTimeCubit.state,
+                        endTimeCubit.state, todoCubit);
                     clearSelectedDateAndTime();
 
                     Navigator.pop(context);
@@ -205,7 +209,8 @@ class _AddPageState extends ConsumerState<UpdateTask> {
         ));
   }
 
-  addTask(String scheduleDate, String startTime, String endTime) {
+  addTask(String scheduleDate, String startTime, String endTime,
+      TodoCubit todoCubit) {
     Task task = Task(
       id: widget.task.id,
       title: titleController.text,
@@ -217,7 +222,7 @@ class _AddPageState extends ConsumerState<UpdateTask> {
       remind: 0,
       repeat: "yes",
     );
-    ref.read(todoStateProvider.notifier).updateItem(task);
+    todoCubit.updateItem(task);
     ref.read(checkTaskEntryProvider.notifier).state = true;
   }
 
