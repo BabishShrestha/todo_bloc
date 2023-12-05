@@ -15,12 +15,15 @@ class AuthCubit extends Cubit<AuthState> {
     required BuildContext context,
     required String smsCode,
     required bool mounted,
-  }) {
+  }) async {
+    emit(AuthLoading());
     _authRepository.verifyOTP(
         context: context,
         smsCodeId: smsCodeId,
         smsCode: smsCode,
         mounted: mounted);
+    emit(AuthSuccess());
+
     // Emit appropriate states based on success or failure
   }
 
@@ -28,12 +31,17 @@ class AuthCubit extends Cubit<AuthState> {
     required String phoneNumber,
     required BuildContext context,
   }) {
+    emit(AuthLoading());
     _authRepository.sendOTP(context: context, phoneNumber: phoneNumber);
+    emit(AuthSuccess());
     // Optionally, emit a loading state before sending the OTP
   }
 
   void signOut() {
+    emit(AuthLoading());
     _authRepository.signOut();
+    emit(AuthSuccess());
+
     // Optionally, emit a state indicating that the user has signed out
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -8,6 +10,7 @@ import 'package:todo_riverpod/core/widgets/custom_otn_btn.dart';
 import 'package:todo_riverpod/core/widgets/custom_textfield.dart';
 import 'package:todo_riverpod/core/widgets/reusable_text.dart';
 import 'package:todo_riverpod/features/auth/bloc/auth_cubit.dart';
+import 'package:todo_riverpod/features/auth/bloc/auth_state.dart';
 import 'package:todo_riverpod/features/auth/bloc/country_code_cubit.dart';
 import 'package:todo_riverpod/features/auth/pages/otp_page.dart';
 import 'package:todo_riverpod/features/auth/widgets/alert_dialog_box.dart';
@@ -128,16 +131,27 @@ class _LoginPageState extends State<LoginPage> {
               const HeightSpacer(spaceHeight: 30),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 10.h),
-                child: CustomOutlineButton(
-                  borderColor: AppConst.kBkDark,
-                  height: AppConst.kHeight * 0.06,
-                  bgColor: AppConst.kLight,
-                  text: 'Enter Code',
-                  width: AppConst.kWidth,
-                  onPressed: () {
-                    sendCodeToUser(codeCubit, authCubit);
-                  },
-                ),
+                child: BlocBuilder<AuthCubit, AuthState>(
+                    builder: (context, state) {
+                  if (state == AuthLoading) {
+                    log("Loading");
+                    Future.delayed(const Duration(seconds: 2));
+                    return const Center(child: CircularProgressIndicator());
+                  } else {
+                    return CustomOutlineButton(
+                      borderColor: AppConst.kBkDark,
+                      height: AppConst.kHeight * 0.06,
+                      bgColor: AppConst.kLight,
+                      text: 'Enter Code',
+                      width: AppConst.kWidth,
+                      onPressed: () {
+                        setState(() {
+                          sendCodeToUser(codeCubit, authCubit);
+                        });
+                      },
+                    );
+                  }
+                }),
               ),
             ],
           ),

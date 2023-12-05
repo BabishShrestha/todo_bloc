@@ -103,7 +103,6 @@ class NotificationHelper {
 
   scheduleNotification(
       int days, int hours, int minutes, int seconds, Task task) async {
-        
     await flutterLocalNotificationsPlugin.zonedSchedule(
         task.id ?? 0,
         task.title,
